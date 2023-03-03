@@ -30,7 +30,7 @@ def update(dt):
                 d.DragScreen.drag(pygame.math.Vector2(event.pos))
         
         elif event.type == MOUSEWHEEL:
-            d.change_zoom(event.y)
+            d.change_zoom(event.y, pygame.math.Vector2(pygame.mouse.get_pos()))
 
     
     # SOLVER UPDATE HERE

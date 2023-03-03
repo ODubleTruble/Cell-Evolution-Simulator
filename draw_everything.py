@@ -12,14 +12,29 @@ def draw_cells(screen):
         
         pygame.draw.circle(screen, color, center, radius)
 
-def change_zoom(zoom):
+def change_zoom(wheel_state, mouse_pos: pygame.math.Vector2):
     '''
-    "zoom" is the mouse wheel's state.
+    "wheel_state" is the mouse wheel's state.
     It will either be 1 (zoom in) or -1 (zoom out).
     '''
     
     global zoom_fac
-    zoom_fac += zoom * (zoom_fac/5)
+    global cam_offset
+    
+    d_zoom_fac = wheel_state * (zoom_fac/5)
+    
+    relative_mouse_pos = (mouse_pos - cam_offset) / zoom_fac
+    d_cam_offset = relative_mouse_pos.copy().rotate(180)
+    d_cam_offset.scale_to_length(d_cam_offset.length() * d_zoom_fac)
+    cam_offset = cam_offset + d_cam_offset
+    
+    zoom_fac += d_zoom_fac
+    
+    print(f"d_zoom_fac: {d_zoom_fac}")
+    print(f"relative_mouse_pos: {relative_mouse_pos}")
+    print(f"d_cam_offset: {d_cam_offset}")
+    print(f"cam_offset: {cam_offset}")
+    print(f"zoom_fac: {zoom_fac}")
 
 class DragScreen:
     prev_mouse_pos = pygame.math.Vector2()
@@ -34,7 +49,5 @@ class DragScreen:
         DragScreen.cur_mouse_pos = mouse_pos
         
         drag_vec = DragScreen.cur_mouse_pos - DragScreen.prev_mouse_pos
-        print(drag_vec)
         global cam_offset
         cam_offset = cam_offset + drag_vec
-        print(cam_offset)
