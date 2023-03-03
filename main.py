@@ -4,17 +4,34 @@ import cell_physics as p
 import draw_everything as d
 
 
+screen_draging = False
+
 # Updates variables and processes stuff.
 # Called once per frame.
 # dt is the amount of time passed since last frame.
 def update(dt):
+    global screen_draging
+    
     # Go through events that are passed to the script by the window.
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+        
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1: 
+                screen_draging = True
+                d.DragScreen.start(pygame.math.Vector2(event.pos))
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if event.button == 1:            
+                screen_draging = False
+        elif event.type == pygame.MOUSEMOTION:
+            if screen_draging:
+                d.DragScreen.drag(pygame.math.Vector2(event.pos))
+        
         elif event.type == MOUSEWHEEL:
             d.change_zoom(event.y)
+
     
     # SOLVER UPDATE HERE
 
